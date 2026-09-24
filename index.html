@@ -10,11 +10,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         
         body {
-            background-color: #080710; 
-            color: #ffffff; 
+            background-color: #080710;
+            color: #ffffff;
             width: 100vw;
             min-height: 100vh;
-            overflow: hidden; 
+            overflow: hidden;
             position: relative;
         }
 
@@ -23,23 +23,23 @@
         .shape1 { background: linear-gradient(135deg, #00F260, #0575E6); top: -150px; left: -150px; }
         .shape2 { background: linear-gradient(135deg, #0575E6, #00F260); bottom: -150px; right: -150px; }
         
-        .login-card { 
+        .login-card {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%); 
-            background: rgba(255, 255, 255, 0.03); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            padding: 40px 30px; 
-            border-radius: 24px; 
-            width: 90%; 
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 40px 30px;
+            border-radius: 24px;
+            width: 90%;
             max-width: 400px;
-            max-height: 90vh; 
-            overflow-y: auto; 
-            backdrop-filter: blur(15px); 
-            text-align: center; 
-            z-index: 10; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
+            max-height: 90vh;
+            overflow-y: auto;
+            backdrop-filter: blur(15px);
+            text-align: center;
+            z-index: 10;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
         }
         
         .login-card::-webkit-scrollbar { display: none; }
@@ -52,20 +52,18 @@
         .toggle-option { flex: 1; padding: 12px; text-align: center; z-index: 2; cursor: pointer; color: white; font-weight: 500; font-size: 14px; background: none; border: none; outline: none; transition: 0.3s; }
 
         .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; font-size: 13px; margin-bottom: 8px; color: #b2bec3; }
-        .input-group input { width: 100%; padding: 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; color: white; font-size: 15px; outline: none; transition: 0.3s; }
-        .input-group input:focus { border-color: #00F260; background: rgba(255,255,255,0.08); }
-        
-        .btn { width: 100%; padding: 16px; background: white; color: #080710; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 5px; box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
-        .btn:active { transform: scale(0.97); }
+        .input-group label { display: block; font-size: 13px; color: #a4b0be; margin-bottom: 8px; }
+        .input-group input { width: 100%; padding: 15px 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #ffffff; font-size: 14px; outline: none; transition: 0.3s; }
+        .input-group input:focus { border-color: #00F260; background: rgba(255, 255, 255, 0.08); }
 
-        .divider { display: flex; align-items: center; text-align: center; margin: 20px 0; color: #a4b0be; font-size: 12px; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .divider:not(:empty)::before { margin-right: .5em; }
-        .divider:not(:empty)::after { margin-left: .5em; }
+        .btn { width: 100%; background: #ffffff; color: #000000; padding: 15px; border-radius: 12px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn:active { transform: scale(0.98); }
 
-        /* Custom Google Button */
-        .google-btn { width: 100%; padding: 14px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .divider { display: flex; align-items: center; text-align: center; margin: 25px 0; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .divider span { padding: 0 15px; color: #a4b0be; font-size: 12px; }
+
+        .google-btn { width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .google-btn:hover { background: rgba(255,255,255,0.1); }
         .google-btn:active { transform: scale(0.97); }
         .google-icon { width: 20px; height: 20px; }
@@ -148,14 +146,14 @@
         <!-- 2. ADMIN LOGIN FORM -->
         <div id="adminForm" class="form-section">
             <div class="input-group">
-                <label>Admin ID / Email</label>
-                <input type="email" placeholder="Enter your email">
+                <label>Admin ID / Username</label>
+                <input type="text" id="adminUser" placeholder="Enter admin username">
             </div>
             <div class="input-group">
                 <label>Password</label>
-                <input type="password" placeholder="Enter password">
+                <input type="password" id="adminPass" placeholder="Enter password">
             </div>
-            <button class="btn" onclick="showToast('Admin Dashboard coming soon!', 'Info', 'success')">Admin Login</button>
+            <button class="btn" onclick="handleAdminLogin()">Admin Login</button>
         </div>
 
         <!-- 3. STUDENT SIGNUP FORM -->
@@ -175,7 +173,6 @@
                 </div>
                 <button class="btn" onclick="sendSignupOTP()" id="regSendOtpBtn">Send OTP</button>
                 
-                <!-- CUSTOM GOOGLE SIGNUP BUTTON -->
                 <div class="divider"><span>OR</span></div>
                 <button class="google-btn" onclick="simulateGoogleLogin()">
                     <svg class="google-icon" viewBox="0 0 24 24">
@@ -203,6 +200,7 @@
         </div>
     </div>
 
+    <!-- Fix: Putting all JS inside one <script> tag properly -->
     <script>
         let currentNumber = "";
         let regNumber = "";
@@ -274,16 +272,17 @@
             showToast("Connecting to Google...", "Please Wait", "success");
             
             setTimeout(() => {
-                const studentData = { 
-                    name: "Raj Nagare", 
-                    rollId: "raj.nagare@kbtcoe.org", 
-                    college: "MVP KBTCOE", 
-                    dept: "Computer Engineering", 
+                const studentData = {
+                    name: "Raj Nagare",
+                    rollId: "raj.nagare@kbtcoe.org",
+                    college: "MVP KBTCOE",
+                    dept: "Computer Engineering",
                     year: "Student",
-                    photo: "" 
+                    photo: ""
                 };
                 localStorage.setItem('studentProfileData', JSON.stringify(studentData));
                 localStorage.setItem('loggedInUser', "raj.nagare@kbtcoe.org");
+                localStorage.setItem('userRole', 'student');
                 
                 showToast("Google Login Successful!", "Connected");
                 setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
@@ -309,6 +308,7 @@
             setTimeout(() => {
                 if(otp === "1234") {
                     localStorage.setItem('loggedInUser', currentNumber);
+                    localStorage.setItem('userRole', 'student');
                     window.location.href = 'dashboard.html';
                 } else {
                     showToast("Invalid OTP! Enter 1234", "Error!", "error");
@@ -347,6 +347,7 @@
                     };
                     localStorage.setItem('studentProfileData', JSON.stringify(studentData));
                     localStorage.setItem('loggedInUser', regNumber);
+                    localStorage.setItem('userRole', 'student');
                     window.location.href = 'dashboard.html';
                 } else {
                     showToast("Invalid OTP! Enter 1234", "Error!", "error");
@@ -355,11 +356,17 @@
             }, 800);
         }
 
-        window.onload = () => {
-            if(localStorage.getItem('loggedInUser')) {
-                window.location.href = 'dashboard.html';
+        function handleAdminLogin() {
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
+
+            if (user === "admin" && pass === "admin123") {
+                localStorage.setItem('userRole', 'admin');
+                window.location.href = "admin.html";
+            } else {
+                showToast("Invalid Admin ID or Password", "Error!", "error");
             }
         }
-    </script>
-</body>
-</html>
+
+        window.onload = () => {
+            if(localStorage.getItem('userR
