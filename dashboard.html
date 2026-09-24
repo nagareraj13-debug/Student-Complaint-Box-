@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Top 1% Premium Student Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Variables */
+        :root {
+            --bg-color: #080710;
+            --text-color: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --border-color: rgba(255, 255, 255, 0.05);
+            --sidebar-bg: rgba(15, 15, 25, 0.95);
+            --input-bg: rgba(255, 255, 255, 0.03);
+            --text-muted: #a4b0be;
+        }
+
+        body.light-mode {
+            --bg-color: #f0f2f5;
+            --text-color: #1e272e;
+            --card-bg: #ffffff;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --sidebar-bg: rgba(255, 255, 255, 0.95);
+            --input-bg: #f8f9fa;
+            --text-muted: #636e72;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; position: relative; padding-bottom: 90px; transition: 0.4s ease; } 
+        
+        .background { width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: -1; overflow: hidden; }
+        .shape { height: 400px; width: 400px; position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.5; transition: 0.4s; }
+        .shape1 { background: linear-gradient(135deg, #00F260, #0575E6); top: -150px; left: -150px; }
+        .shape2 { background: linear-gradient(135deg, #0575E6, #00F260); bottom: -150px; right: -150px; }
+        body.light-mode .shape { opacity: 0.15; }
+
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: transparent; position: relative; z-index: 50; }
+        .menu-icon { cursor: pointer; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; z-index: 60; padding: 5px; }
+        .menu-icon div { width: 24px; height: 2px; background-color: var(--text-color); border-radius: 5px; transition: 0.3s; }
+        .menu-icon div:nth-child(2) { width: 16px; }
+        
+        /* Light Mode Title Fix */
+        .nav-title { font-size: 18px; font-weight: 700; background: linear-gradient(90deg, #00F260, #0575E6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; line-height: 1.2; flex-grow: 1; padding: 0 10px; transition: 0.4s; }
+        body.light-mode .nav-title { background: none; -webkit-text-fill-color: #080710; color: #080710; }
+
+        .top-icons { display: flex; align-items: center; gap: 15px; flex-shrink: 0; z-index: 60; }
+        .theme-btn { font-size: 20px; cursor: pointer; transition: 0.3s; }
+        .theme-btn:active { transform: scale(0.85); }
+        .bell-icon { font-size: 20px; cursor: pointer; position: relative; color: var(--text-muted); transition: 0.3s; }
+        .bell-icon:active { transform: scale(0.9); }
+        .notification-dot { position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: #ff4757; border-radius: 50%; border: 2px solid var(--bg-color); display: none; }
+
+        .side-menu { position: fixed; top: 0; left: -320px; width: 300px; height: 100vh; background: var(--sidebar-bg); backdrop-filter: blur(25px); border-right: 1px solid var(--border-color); z-index: 1000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 40px 25px; display: flex; flex-direction: column; }
+        .side-menu.active { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); z-index: 999; display: none; opacity: 0; transition: 0.3s; }
+        .menu-overlay.active { display: block; opacity: 1; }
+
+        .drawer-profile { display: flex; align-items: center; gap: 18px; margin-bottom: 40px; padding-bottom: 25px; border-bottom: 1px solid var(--border-color); }
+        .avatar { width: 55px; height: 55px; border-radius: 50%; background: linear-gradient(135deg, #00F260, #0575E6); display: flex; justify-content: center; align-items: center; font-size: 22px; font-weight: 600; box-shadow: 0 5px 15px rgba(5, 117, 230, 0.3); color: white; text-transform: uppercase; background-size: cover; background-position: center; }
+        .drawer-profile h3 { font-size: 18px; font-weight: 600; margin-bottom: 3px; text-transform: capitalize; color: var(--text-color); }
+        .drawer-profile p { font-size: 12px; color: var(--text-muted); }
+
+        .drawer-links { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+        .drawer-item { padding: 16px; border-radius: 14px; font-size: 15px; font-weight: 500; color: var(--text-color); display: flex; align-items: center; gap: 15px; cursor: pointer; transition: 0.3s; }
+        .drawer-item:hover, .drawer-item.active { background: rgba(0, 242, 96, 0.1); transform: translateX(5px); }
+        .logout-menu { margin-top: auto; color: #ff4757; }
+
+        .notification-panel { position: fixed; top: 0; right: -350px; width: 320px; max-width: 90vw; height: 100vh; background: var(--sidebar-bg); backdrop-filter: blur(25px); border-left: 1px solid var(--border-color); z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 30px 20px; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
+        .notification-panel.active { right: 0; }
+        .noti-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .noti-header h3 { font-size: 18px; font-weight: 600; color: var(--text-color); }
+        .noti-close { background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; }
+        .noti-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-bottom: 20px; }
+        .noti-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 16px; position: relative; overflow: hidden; }
+        .noti-card::before { content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%; background: #00F260; }
+        .noti-card.pending::before { background: #fbc531; }
+        .noti-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 5px; color: #00F260; display: flex; align-items: center; gap: 8px; }
+        .noti-card.pending h4 { color: #fbc531; }
+        .noti-card p { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+        .container { padding: 10px 25px; }
+        .welcome-text { margin-bottom: 35px; }
+        .welcome-text h2 { font-size: 26px; font-weight: 600; margin-bottom: 8px; text-transform: capitalize; }
+        .welcome-text p { font-size: 14px; color: var(--text-muted); }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 40px; }
+        .stat-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 20px 10px; text-align: center; backdrop-filter: blur(15px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .stat-card h3 { font-size: 28px; margin-bottom: 8px; font-weight: 600; }
+        .stat-card p { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 500; }
+        .text-blue { color: #0575E6; }
+        .text-yellow { color: #fbc531; }
+        .text-green { color: #00F260; }
+
+        .raise-btn { width: 100%; background: linear-gradient(135deg, #00F260, #0575E6); border: none; padding: 20px; border-radius: 18px; color: white; font-size: 17px; font-weight: 600; cursor: pointer; box-shadow: 0 10px 25px rgba(5, 117, 230, 0.3); margin-bottom: 40px; transition: 0.3s;}
+        .raise-btn:active { transform: scale(0.98); }
+        .section-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .section-title span { font-size: 13px; color: #0575E6; cursor: pointer; }
+        
+        .empty-state { text-align: center; padding: 50px 20px; background: var(--card-bg); border: 1px dashed var(--border-color); border-radius: 24px; }
+        .empty-state h4 { font-size: 17px; font-weight: 500; margin-bottom: 12px; }
+        .empty-state p { font-size: 13px; color: var(--text-muted); }
+
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--sidebar-bg); backdrop-filter: blur(20px); border: 1px solid var(--border-color); border-radius: 30px; display: flex; justify-content: space-around; padding: 12px 10px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 15px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .nav-item.active { background: rgba(100, 100, 100, 0.1); }
+        .nav-icon { font-size: 20px; color: var(--text-muted); }
+        .nav-item.active .nav-icon, .nav-item.active .nav-label { color: #00F260; }
+        .nav-label { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: flex-end; z-index: 2000; opacity: 0; transition: 0.3s; }
+        .modal-content { background: var(--card-bg); width: 100%; max-height: 90vh; overflow-y: auto; border-radius: 30px 30px 0 0; padding: 35px 25px; transform: translateY(100%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-top: 1px solid var(--border-color); backdrop-filter: blur(20px);}
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .close-btn { background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); width: 35px; height: 35px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 13px; margin-bottom: 10px; color: var(--text-muted); font-weight: 500; }
+        .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 16px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 14px; color: var(--text-color); font-size: 14px; outline: none; }
+        .input-group select option { background: var(--bg-color); color: var(--text-color); }
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: #00F260; }
+        
+        .priority-options { display: flex; gap: 10px; }
+        .priority-btn { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-muted); text-align: center; cursor: pointer; font-size: 13px; }
+        .priority-btn.active.low { background: #00F260; color: #080710; font-weight: 600; }
+        .priority-btn.active.med { background: #fbc531; color: #080710; font-weight: 600; }
+        .priority-btn.active.high { background: #ff4757; color: white; font-weight: 600; }
+
+        .submit-complaint-btn { width: 100%; padding: 18px; background: linear-gradient(90deg, #0575E6, #00F260); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        
+        .toast-notification { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: var(--sidebar-bg); border: 1px solid #00F260; border-radius: 16px; padding: 15px 25px; display: flex; align-items: center; gap: 15px; z-index: 3000; transition: 0.5s; min-width: 300px; }
+        .toast-notification.show { top: 30px; }
+        .toast-icon { font-size: 24px; padding: 10px; border-radius: 50%; }
+    </style>
+</head>
+<body>
+
+    <div id="customToast" class="toast-notification">
+        <div class="toast-icon">✅</div>
+        <div><h4 id="toastTitle" style="font-size: 15px; font-weight: 600;">Success!</h4><p id="toastMessage" style="font-size: 12px; color: var(--text-muted);">Complaint submitted.</p></div>
+    </div>
+
+    <div class="background"><div class="shape shape1"></div><div class="shape shape2"></div></div>
+
+    <!-- Top Navbar -->
+    <div class="navbar">
+        <div class="menu-icon" onclick="toggleSidebar()">
+            <div></div><div></div><div></div>
+        </div>
+        <div class="nav-title">Student Complaint<br>Box</div>
+        <div class="top-icons">
+            <div class="theme-btn" id="themeIconNav" onclick="toggleTheme()">🌙</div>
+            <div class="bell-icon" onclick="toggleNotiPanel()">
+                🔔<div class="notification-dot" id="bellDot"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-overlay" id="menuOverlay" onclick="closeAllPanels()"></div>
+
+    <!-- Side Menu -->
+    <div class="side-menu" id="sideMenu">
+        <div class="drawer-profile">
+            <div class="avatar" id="sidebarAvatar"><span id="sidebarInitial">S</span></div>
+            <div>
+                <h3 id="sidebarName">Student</h3>
+                <p>Student Profile</p>
+            </div>
+        </div>
+        <div class="drawer-links">
+            <div class="drawer-item active">🏠 Dashboard</div>
+            <div class="drawer-item" onclick="window.location.href='track.html'">📍 Track Status</div>
+            <div class="drawer-item" onclick="window.location.href='track.html'">📜 History</div>
+            <div class="drawer-item" onclick="toggleTheme()"><span id="themeIconSide">🌙</span> Theme Mode</div>
+            <div class="drawer-item" onclick="window.location.href='profile.html'">⚙️ Settings</div>
+            <div class="drawer-item logout-menu" onclick="logout()">🚪 Logout</div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION SLIDE PANEL -->
+    <div class="notification-panel" id="notiPanel">
+        <div class="noti-header">
+            <h3>Notifications 🔔</h3>
+            <button class="noti-close" onclick="toggleNotiPanel()">&times;</button>
+        </div>
+        <div class="noti-list" id="notiList">
+            <div style="text-align:center; padding: 20px; color: var(--text-muted); font-size: 13px;">Fetching updates...</div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="container">
+        <div class="welcome-text">
+            <h2>Hello, <span id="welcomeName">Student</span> 👋</h2>
+            <p>Ready to resolve issues on campus?</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card"><h3 class="text-blue" id="dashTotal">0</h3><p>Filed</p></div>
+            <div class="stat-card"><h3 class="text-yellow" id="dashPending">0</h3><p>Pending</p></div>
+            <div class="stat-card"><h3 class="text-green" id="dashResolved">0</h3><p>Resolved</p></div>
+        </div>
+
+        <button class="raise-btn" onclick="openComplaintForm()">✍️ Raise New Complaint</button>
+
+        <div class="section-title">
+            Recent Activity
+            <span onclick="window.location.href='track.html'">View All</span>
+        </div>
+        
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <h4>No activity yet! 🎉</h4>
+            <p>Your dashboard is clean. If you face any issues, click the button above.</p>
+        </div>
+        
+        <div id="recentActivityBox"></div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <div class="nav-item active"><div class="nav-icon">🏠</div><div class="nav-label">Home</div></div>
+        <div class="nav-item" onclick="window.location.href='track.html'"><div class="nav-icon">🔍</div><div class="nav-label">Track</div></div>
+        <div class="nav-item" onclick="openComplaintForm()"><div class="nav-icon">✍️</div><div class="nav-label">New</div></div>
+        <div class="nav-item" onclick="window.location.href='profile.html'"><div class="nav-icon">👤</div><div class="nav-label">Profile</div></div>
+    </div>
+
+    <!-- Complaint Form Modal -->
+    <div class="modal-overlay" id="complaintModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Submit an Issue 📝</h3>
+                <button class="close-btn" onclick="closeComplaintForm()">&times;</button>
+            </div>
+            <form onsubmit="submitRealComplaint(event)">
+                <div class="input-group">
+                    <label>Complaint Category</label>
+                    <select id="compCategory" required>
+                        <option value="" disabled selected>Select category...</option>
+                        <option value="Infrastructure">Infrastructure & Facilities</option>
+                        <option value="Faculty">Faculty & Teaching</option>
+                        <option value="Hostel">Hostel & Mess</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Priority Level</label>
+                    <div class="priority-options">
+                        <div class="priority-btn low" onclick="setPriority(this, 'low')">🟢 Low</div>
+                        <div class="priority-btn med active" onclick="setPriority(this, 'med')">🟡 Medium</div>
+                        <div class="priority-btn high" onclick="setPriority(this, 'high')">🔴 High</div>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Brief Description</label>
+                    <textarea id="compDesc" rows="3" placeholder="Explain your problem briefly..." required></textarea>
+                </div>
+                <button type="submit" class="submit-complaint-btn">Submit Securely</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('appTheme', isLight ? 'light' : 'dark');
+            document.getElementById('themeIconNav').innerText = isLight ? '☀️' : '🌙';
+            document.getElementById('themeIconSide').innerText = isLight ? '☀️' : '🌙';
+        }
+
+        function checkTheme() {
+            if(localStorage.getItem('appTheme') === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('themeIconNav').innerText = '☀️';
+                document.getElementById('themeIconSide').innerText = '☀️';
+            }
+        }
+
+        function showToast(message, title = 'Success!', color = '#00F260') {
+            const toast = document.getElementById('customToast');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMessage').innerText = message;
+            toast.style.borderColor = color;
+            document.getElementById('toastTitle').style.color = color;
+            document.querySelector('.toast-icon').style.background = `rgba(0, 242, 96, 0.1)`;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sideMenu').classList.toggle('active');
+                        document.getElementById('menuOverlay').classList.toggle('active');
+            document.getElementById('notiPanel').classList.remove('active');
+        }
+
+        function toggleNotiPanel() {
+            document.getElementById('notiPanel').classList.toggle('active');
+            document.getElementById('menuOverlay').classList.toggle('active');
+            document.getElementById('sideMenu').classList.remove('active');
+            document.getElementById('bellDot').style.display = 'none';
+        }
+
+        function closeAllPanels() {
+            document.getElementById('sideMenu').classList.remove('active');
+            document.getElementById('notiPanel').classList.remove('active');
+            document.getElementById('menuOverlay').classList.remove('active');
+        }
+
+        function openComplaintForm() { document.getElementById('complaintModal').classList.add('active'); }
+        function closeComplaintForm() { document.getElementById('complaintModal').classList.remove('active'); }
+
+        function setPriority(element, level) {
+            document.querySelectorAll('.priority-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        window.onload = async function() {
+            checkTheme(); 
+
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if(!loggedInUser) { window.location.href = 'index.html'; return; }
+
+            try {
+                const profileDataStr = localStorage.getItem('studentProfileData');
+                if(profileDataStr) {
+                    const profileData = JSON.parse(profileDataStr);
+                    if(profileData.name) {
+                        const firstName = profileData.name.split(' ')[0];
+                        document.getElementById('welcomeName').innerText = firstName;
+                        document.getElementById('sidebarName').innerText = firstName;
+                        document.getElementById('sidebarInitial').innerText = firstName.charAt(0);
+                    }
+                    if(profileData.photo) {
+                        document.getElementById('sidebarAvatar').style.backgroundImage = `url(${profileData.photo})`;
+                        document.getElementById('sidebarInitial').style.display = 'none';
+                    }
+                }
+            } catch(e) { console.error(e); }
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/dashboard/${loggedInUser}`);
+                const result = await response.json();
+                
+                if(result.success) {
+                    document.getElementById('dashTotal').innerText = result.stats.total;
+                    document.getElementById('dashPending').innerText = result.stats.pending;
+                    document.getElementById('dashResolved').innerText = result.stats.resolved;
+
+                    const notiList = document.getElementById('notiList');
+                    const recentActivityBox = document.getElementById('recentActivityBox');
+                    
+                    if(result.recent.length > 0) {
+                        let notiHTML = '';
+                        let recentHTML = '';
+                        
+                        result.recent.forEach(comp => {
+                            if(comp.status === 'Resolved') {
+                                notiHTML += `<div class="noti-card"><div style="display:flex; justify-content:space-between;"><h4>✅ Issue Resolved</h4><span style="font-size:10px; color:var(--text-muted);">${comp.id}</span></div><p>Your ${comp.category} complaint has been resolved by the admin.</p></div>`;
+                            } else {
+                                notiHTML += `<div class="noti-card pending"><div style="display:flex; justify-content:space-between;"><h4>⏳ Under Review</h4><span style="font-size:10px; color:var(--text-muted);">${comp.id}</span></div><p>Your ${comp.category} issue is received. Expected resolution within 2 days.</p></div>`;
+                            }
+
+                            let badgeClass = comp.status === 'Resolved' ? 'color:#00F260; background:rgba(0,242,96,0.1)' : 'color:#fbc531; background:rgba(251,197,49,0.1)';
+                            recentHTML += `
+                            <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:15px; border-radius:16px; margin-bottom:15px; box-shadow:0 5px 15px rgba(0,0,0,0.05);" onclick="window.location.href='track.html'">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                                    <h4 style="font-size:14px; font-weight:600;">${comp.category}</h4>
+                                    <span style="font-size:10px; padding:3px 8px; border-radius:8px; font-weight:600; ${badgeClass}">${comp.status}</span>
+                                </div>
+                                <p style="font-size:12px; color:var(--text-muted);">${comp.description.substring(0, 40)}...</p>
+                            </div>`;
+                        });
+
+                        notiList.innerHTML = notiHTML;
+                        recentActivityBox.innerHTML = recentHTML;
+                        document.getElementById('bellDot').style.display = 'block'; 
+                        document.getElementById('emptyState').style.display = 'none';
+                    } else {
+                        notiList.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted); font-size: 13px;">📭 No new notifications</div>';
+                        document.getElementById('emptyState').style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error("Backend Error:", error);
+            }
+        };
+
+        async function submitRealComplaint(event) {
+            event.preventDefault(); 
+            
+            const category = document.getElementById('compCategory').value;
+            const priorityElement = document.querySelector('.priority-btn.active');
+            const priority = priorityElement ? priorityElement.innerText.replace(/[^a-zA-Z]/g, '').toLowerCase().trim() : 'med';
+            const description = document.getElementById('compDesc').value;
+
+            const loggedInUser = localStorage.getItem('loggedInUser') || "9876543210";
+
+            const complaintData = {
+                mobile: loggedInUser, 
+                category: category,
+                priority: priority,
+                description: description,
+                isAnonymous: false
+            };
+
+            const submitBtn = event.target.querySelector('.submit-complaint-btn');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = "Submitting... ⏳";
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('http://localhost:3000/api/complaints', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(complaintData)
+                });
+
+                const result = await response.json();
+
+                if(result.success) {
+                    showToast(`Tracking ID: ${result.data.id} registered!`, 'Success!', '#00F260');
+                    event.target.reset();
+                    document.querySelectorAll('.priority-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelector('.priority-btn.med').classList.add('active');
+                    closeComplaintForm(); 
+                    setTimeout(() => { location.reload(); }, 1500);
+                } else {
+                    showToast("Error submitting complaint!", "Error!", "#ff4757");
+                }
+            } catch (error) {
+                console.error("Connection Error:", error);
+                showToast("Backend Server Offline! Start Termux", "Error!", "#ff4757");
+            }
+
+            submitBtn.innerText = originalText;
+            submitBtn.disabled = false;
+        }
+
+        function logout() {
+            if(confirm("Are you sure you want to log out?")) {
+                localStorage.removeItem('loggedInUser');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

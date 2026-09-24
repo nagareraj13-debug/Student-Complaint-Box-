@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Live Track Status</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #080710;
+            --text-color: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-muted: #a4b0be;
+            --timeline-line: rgba(255, 255, 255, 0.1);
+            --timeline-dot: #080710;
+        }
+        body.light-mode {
+            --bg-color: #f4f7f6;
+            --text-color: #1e272e;
+            --card-bg: #ffffff;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --text-muted: #636e72;
+            --timeline-line: rgba(0, 0, 0, 0.15);
+            --timeline-dot: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); min-height: 100vh; padding: 20px; transition: 0.4s ease; }
+        .background { width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: -1; }
+        .shape { height: 350px; width: 350px; position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5; }
+        .shape1 { background: linear-gradient(135deg, #00F260, #0575E6); top: -100px; left: -100px; }
+        .shape2 { background: linear-gradient(135deg, #0575E6, #00F260); bottom: -100px; right: -100px; }
+        
+        .header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; margin-top: 10px; }
+        .back-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); width: 40px; height: 40px; border-radius: 12px; font-size: 18px; cursor: pointer; backdrop-filter: blur(5px); }
+        .header h2 { font-size: 20px; font-weight: 600; }
+        
+        .complaint-details { background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 20px; margin-bottom: 30px; backdrop-filter: blur(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .complaint-details h3 { font-size: 16px; margin-bottom: 5px; color: #00F260; text-transform: capitalize; }
+        .complaint-details p { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
+        .badge { background: rgba(251, 197, 49, 0.2); color: #fbc531; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 600; }
+        .badge.resolved { background: rgba(0, 242, 96, 0.2); color: #00F260; }
+        .desc-box { margin-top: 12px; font-size: 12px; color: var(--text-color); background: rgba(128,128,128,0.1); padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); }
+
+        .timeline { position: relative; padding-left: 30px; margin-left: 10px; }
+        .timeline::before { content: ''; position: absolute; left: 0; top: 0; width: 2px; height: 100%; background: var(--timeline-line); }
+        .timeline-step { position: relative; margin-bottom: 30px; }
+        .timeline-step::before { content: ''; position: absolute; left: -36px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--timeline-dot); border: 2px solid var(--border-color); z-index: 2; transition: 0.3s; }
+        .timeline-step.completed::before { background: #00F260; border-color: #00F260; box-shadow: 0 0 10px rgba(0, 242, 96, 0.5); }
+        .timeline-step.active::before { background: #0575E6; border-color: #0575E6; box-shadow: 0 0 15px rgba(5, 117, 230, 0.8); }
+        .timeline-step h4 { font-size: 15px; font-weight: 500; margin-bottom: 3px; color: var(--text-color); }
+        .timeline-step p { font-size: 12px; color: var(--text-muted); }
+        .timeline-step.completed::after { content: ''; position: absolute; left: -30px; top: 16px; width: 2px; height: calc(100% + 14px); background: #00F260; z-index: 1; }
+        
+        .loading-msg { text-align: center; color: var(--text-muted); margin-top: 50px; font-size: 14px; font-weight: 500;}
+        
+        /* Premium Empty State */
+        .empty-notification { text-align: center; margin-top: 60px; padding: 30px 20px; background: var(--card-bg); border-radius: 24px; border: 1px dashed var(--border-color); backdrop-filter: blur(10px); }
+        .empty-icon { font-size: 45px; margin-bottom: 15px; }
+        .empty-notification h3 { font-size: 18px; color: var(--text-color); margin-bottom: 8px; font-weight: 600; }
+        .empty-notification p { font-size: 13px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
+        .new-btn { padding: 14px 25px; background: linear-gradient(90deg, #0575E6, #00F260); border: none; border-radius: 14px; color: white; font-weight: 600; cursor: pointer; box-shadow: 0 8px 20px rgba(5, 117, 230, 0.3); transition: 0.3s; }
+        .new-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+    <div class="background"><div class="shape shape1"></div><div class="shape shape2"></div></div>
+    <div class="header">
+        <button class="back-btn" onclick="window.location.href='dashboard.html'">←</button>
+        <!-- Heading Updated -->
+        <h2>Live Track Status</h2>
+    </div>
+    
+    <div id="trackerData">
+        <div class="loading-msg">Fetching live data... ⏳</div>
+    </div>
+
+    <script>
+        function checkTheme() {
+            if(localStorage.getItem('appTheme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        }
+
+        async function fetchLiveStatus() {
+            try {
+                const loggedInUser = localStorage.getItem('loggedInUser') || "9876543210";
+                const response = await fetch(`http://localhost:3000/api/dashboard/${loggedInUser}`);
+                const result = await response.json();
+                const trackerDiv = document.getElementById('trackerData');
+
+                if(result.success && result.recent.length > 0) {
+                    const latest = result.recent[0];
+                    let badgeHtml = latest.status === 'Pending' 
+                        ? `<span class="badge">Action Pending</span>` 
+                        : `<span class="badge resolved">Resolved ✅</span>`;
+                    let statusDate = new Date(latest.date).toLocaleString();
+
+                    trackerDiv.innerHTML = `
+                        <div class="complaint-details">
+                            <h3>${latest.category} Issue</h3>
+                            <p>Tracking ID: <strong>${latest.id}</strong></p>
+                            ${badgeHtml}
+                            <div class="desc-box"><strong>Description:</strong> ${latest.description}</div>
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-step completed">
+                                <h4>Complaint Submitted</h4><p>${statusDate}</p>
+                            </div>
+                            <div class="timeline-step active">
+                                <h4>Admin Review Pending</h4><p>Our team will verify this soon.</p>
+                            </div>
+                            <div class="timeline-step">
+                                <h4>Action In Progress</h4><p>Waiting for department assignment</p>
+                            </div>
+                            <div class="timeline-step">
+                                <h4>Issue Resolved</h4><p>Pending confirmation</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    trackerDiv.innerHTML = `
+                        <div class="empty-notification">
+                            <div class="empty-icon">📭</div>
+                            <h3>No new notifications yet!</h3>
+                            <p>You haven't raised any complaints recently, or your previous session was cleared.</p>
+                            <button class="new-btn" onclick="window.location.href='dashboard.html'">Raise New Complaint</button>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('trackerData').innerHTML = `<div class="loading-msg" style="color: #ff4757;">Backend is offline! Start Termux. ❌</div>`;
+            }
+        }
+        
+        window.onload = function() {
+            checkTheme();
+            fetchLiveStatus();
+        };
+    </script>
+</body>
+</html>
+

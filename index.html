@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Complaint Box - Smart Authentication</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body {
+            background-color: #080710; 
+            color: #ffffff; 
+            width: 100vw;
+            min-height: 100vh;
+            overflow: hidden; 
+            position: relative;
+        }
+
+        .background { width: 100%; height: 100vh; position: fixed; top: 0; left: 0; z-index: -1; }
+        .shape { height: 400px; width: 400px; position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5; }
+        .shape1 { background: linear-gradient(135deg, #00F260, #0575E6); top: -150px; left: -150px; }
+        .shape2 { background: linear-gradient(135deg, #0575E6, #00F260); bottom: -150px; right: -150px; }
+        
+        .login-card { 
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            padding: 40px 30px; 
+            border-radius: 24px; 
+            width: 90%; 
+            max-width: 400px;
+            max-height: 90vh; 
+            overflow-y: auto; 
+            backdrop-filter: blur(15px); 
+            text-align: center; 
+            z-index: 10; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); 
+        }
+        
+        .login-card::-webkit-scrollbar { display: none; }
+        .login-card { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .title-text { font-size: 24px; font-weight: 600; margin-bottom: 25px; min-height: 70px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+
+        .toggle-box { position: relative; display: flex; background: rgba(255, 255, 255, 0.05); border-radius: 30px; margin: 0 auto 25px; width: 100%; max-width: 280px; transition: 0.3s; }
+        .toggle-btn { position: absolute; width: 50%; height: 100%; background: linear-gradient(90deg, #00F260, #0575E6); border-radius: 30px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; left: 0; }
+        .toggle-option { flex: 1; padding: 12px; text-align: center; z-index: 2; cursor: pointer; color: white; font-weight: 500; font-size: 14px; background: none; border: none; outline: none; transition: 0.3s; }
+
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 13px; margin-bottom: 8px; color: #b2bec3; }
+        .input-group input { width: 100%; padding: 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; color: white; font-size: 15px; outline: none; transition: 0.3s; }
+        .input-group input:focus { border-color: #00F260; background: rgba(255,255,255,0.08); }
+        
+        .btn { width: 100%; padding: 16px; background: white; color: #080710; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 5px; box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+        .btn:active { transform: scale(0.97); }
+
+        .divider { display: flex; align-items: center; text-align: center; margin: 20px 0; color: #a4b0be; font-size: 12px; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .divider:not(:empty)::before { margin-right: .5em; }
+        .divider:not(:empty)::after { margin-left: .5em; }
+
+        /* Custom Google Button */
+        .google-btn { width: 100%; padding: 14px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .google-btn:hover { background: rgba(255,255,255,0.1); }
+        .google-btn:active { transform: scale(0.97); }
+        .google-icon { width: 20px; height: 20px; }
+        
+        .signup-text { margin-top: 25px; font-size: 13px; color: #a4b0be; }
+        .signup-text span { color: #00F260; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .signup-text span:hover { text-decoration: underline; }
+
+        .form-section { display: none; }
+        .form-section.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .otp-section { display: none; }
+        
+        .toast-notification { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(15, 15, 25, 0.95); border: 1px solid #00F260; border-radius: 16px; padding: 15px 25px; display: flex; align-items: center; gap: 15px; z-index: 3000; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); min-width: 300px; backdrop-filter: blur(10px); }
+        .toast-notification.show { top: 30px; }
+        .toast-icon { font-size: 24px; background: rgba(0, 242, 96, 0.1); padding: 10px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .toast-content h4 { font-size: 15px; font-weight: 600; color: #00F260; margin-bottom: 3px; }
+        .toast-content p { font-size: 12px; color: #dfe6e9; }
+    </style>
+</head>
+<body>
+    <div id="customToast" class="toast-notification">
+        <div class="toast-icon" id="toastIcon">✅</div>
+        <div class="toast-content"><h4 id="toastTitle">Success!</h4><p id="toastMessage">Action completed.</p></div>
+    </div>
+    
+    <div class="background">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+    </div>
+
+    <!-- MAIN LOGIN/SIGNUP CARD -->
+    <div class="login-card">
+        <div class="title-text" id="formTitle">Welcome to Student<br>Complaint Box 🏫</div>
+
+        <!-- Student/Admin Toggle -->
+        <div class="toggle-box" id="toggleBox">
+            <div class="toggle-btn" id="toggleBtn"></div>
+            <button type="button" class="toggle-option" onclick="switchForm('student')">Student</button>
+            <button type="button" class="toggle-option" onclick="switchForm('admin')">Admin</button>
+        </div>
+
+        <!-- 1. STUDENT LOGIN FORM -->
+        <div id="studentForm" class="form-section active">
+            <div id="mobileSection">
+                <div class="input-group">
+                    <label>Mobile Number</label>
+                    <input type="tel" id="mobileNumber" placeholder="Enter 10-digit mobile number" maxlength="10">
+                </div>
+                <button class="btn" onclick="sendOTP()" id="sendOtpBtn">Get OTP</button>
+
+                <!-- CUSTOM GOOGLE LOGIN BUTTON -->
+                <div class="divider"><span>OR</span></div>
+                <button class="google-btn" onclick="simulateGoogleLogin()">
+                    <svg class="google-icon" viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Continue with Google
+                </button>
+
+                <div class="signup-text">Don't have an account? <span onclick="toggleSignupView(true)">Sign Up</span></div>
+            </div>
+
+            <!-- Login OTP Section -->
+            <div id="otpSection" class="otp-section">
+                <p style="color: #00F260; font-size: 13px; margin-bottom: 15px;">OTP sent to <span id="displayNum"></span></p>
+                <div class="input-group">
+                    <label>Enter 4-Digit OTP</label>
+                    <input type="number" id="otpInput" placeholder="0000" maxlength="4">
+                </div>
+                <button class="btn" onclick="verifyOTP()" id="verifyOtpBtn">Verify & Login</button>
+                <p style="margin-top: 20px; font-size: 12px; color: #a4b0be; cursor: pointer;" onclick="location.reload()">← Change Number</p>
+            </div>
+        </div>
+
+        <!-- 2. ADMIN LOGIN FORM -->
+        <div id="adminForm" class="form-section">
+            <div class="input-group">
+                <label>Admin ID / Email</label>
+                <input type="email" placeholder="Enter your email">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" placeholder="Enter password">
+            </div>
+            <button class="btn" onclick="showToast('Admin Dashboard coming soon!', 'Info', 'success')">Admin Login</button>
+        </div>
+
+        <!-- 3. STUDENT SIGNUP FORM -->
+        <div id="signupForm" class="form-section">
+            <div id="signupInputSection">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" placeholder="Enter your full name">
+                </div>
+                <div class="input-group">
+                    <label>College ID / Roll No</label>
+                    <input type="text" id="regId" placeholder="e.g. 25367">
+                </div>
+                <div class="input-group">
+                    <label>Mobile Number</label>
+                    <input type="tel" id="regMobile" placeholder="Enter 10-digit number" maxlength="10">
+                </div>
+                <button class="btn" onclick="sendSignupOTP()" id="regSendOtpBtn">Send OTP</button>
+                
+                <!-- CUSTOM GOOGLE SIGNUP BUTTON -->
+                <div class="divider"><span>OR</span></div>
+                <button class="google-btn" onclick="simulateGoogleLogin()">
+                    <svg class="google-icon" viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Sign up with Google
+                </button>
+
+                <div class="signup-text">Already have an account? <span onclick="toggleSignupView(false)">Login</span></div>
+            </div>
+
+            <!-- Signup OTP Section -->
+            <div id="signupOtpSection" class="otp-section">
+                <p style="color: #00F260; font-size: 13px; margin-bottom: 15px;">OTP sent to <span id="regDisplayNum"></span></p>
+                <div class="input-group">
+                    <label>Enter 4-Digit OTP</label>
+                    <input type="number" id="regOtpInput" placeholder="0000" maxlength="4">
+                </div>
+                <button class="btn" onclick="verifySignupOTP()" id="regVerifyOtpBtn">Create Account</button>
+                <p style="margin-top: 20px; font-size: 12px; color: #a4b0be; cursor: pointer;" onclick="toggleSignupView(false)">← Cancel Registration</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentNumber = "";
+        let regNumber = "";
+
+        function showToast(message, title = 'Success!', type = 'success') {
+            const toast = document.getElementById('customToast');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMessage').innerText = message;
+            
+            if(type === 'error') {
+                toast.style.borderColor = '#ff4757';
+                document.getElementById('toastTitle').style.color = '#ff4757';
+                document.getElementById('toastIcon').style.background = 'rgba(255, 71, 87, 0.1)';
+                document.getElementById('toastIcon').innerText = '❌';
+            } else {
+                toast.style.borderColor = '#00F260';
+                document.getElementById('toastTitle').style.color = '#00F260';
+                document.getElementById('toastIcon').style.background = 'rgba(0, 242, 96, 0.1)';
+                document.getElementById('toastIcon').innerText = '✅';
+            }
+            
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        function switchForm(type) {
+            const toggleBtn = document.getElementById('toggleBtn');
+            const studentForm = document.getElementById('studentForm');
+            const adminForm = document.getElementById('adminForm');
+            const formTitle = document.getElementById('formTitle');
+
+            if (type === 'student') {
+                toggleBtn.style.left = '0';
+                studentForm.classList.add('active');
+                adminForm.classList.remove('active');
+                formTitle.innerHTML = 'Welcome to Student<br>Complaint Box 🏫';
+            } else {
+                toggleBtn.style.left = '50%';
+                adminForm.classList.add('active');
+                studentForm.classList.remove('active');
+                formTitle.innerHTML = 'Admin Portal 🛡️';
+            }
+        }
+
+        function toggleSignupView(isSignup) {
+            const toggleBox = document.getElementById('toggleBox');
+            const studentForm = document.getElementById('studentForm');
+            const signupForm = document.getElementById('signupForm');
+            const formTitle = document.getElementById('formTitle');
+            const adminForm = document.getElementById('adminForm');
+
+            if (isSignup) {
+                toggleBox.style.display = 'none';
+                studentForm.classList.remove('active');
+                adminForm.classList.remove('active');
+                signupForm.classList.add('active');
+                formTitle.innerHTML = 'Create Account 🎓';
+                
+                document.getElementById('signupInputSection').style.display = 'block';
+                document.getElementById('signupOtpSection').style.display = 'none';
+            } else {
+                toggleBox.style.display = 'flex';
+                signupForm.classList.remove('active');
+                switchForm('student');
+            }
+        }
+
+        function simulateGoogleLogin() {
+            showToast("Connecting to Google...", "Please Wait", "success");
+            
+            setTimeout(() => {
+                const studentData = { 
+                    name: "Raj Nagare", 
+                    rollId: "raj.nagare@kbtcoe.org", 
+                    college: "MVP KBTCOE", 
+                    dept: "Computer Engineering", 
+                    year: "Student",
+                    photo: "" 
+                };
+                localStorage.setItem('studentProfileData', JSON.stringify(studentData));
+                localStorage.setItem('loggedInUser', "raj.nagare@kbtcoe.org");
+                
+                showToast("Google Login Successful!", "Connected");
+                setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+            }, 1500);
+        }
+
+        function sendOTP() {
+            const num = document.getElementById('mobileNumber').value;
+            if(num.length !== 10) return showToast("Enter a valid 10-digit number.", "Error!", "error");
+            
+            document.getElementById('sendOtpBtn').innerText = "Sending... ⏳";
+            setTimeout(() => {
+                currentNumber = num;
+                document.getElementById('displayNum').innerText = "+91 " + num;
+                document.getElementById('mobileSection').style.display = 'none';
+                document.getElementById('otpSection').style.display = 'block';
+            }, 800);
+        }
+
+        function verifyOTP() {
+            const otp = document.getElementById('otpInput').value;
+            document.getElementById('verifyOtpBtn').innerText = "Verifying... ⏳";
+            setTimeout(() => {
+                if(otp === "1234") {
+                    localStorage.setItem('loggedInUser', currentNumber);
+                    window.location.href = 'dashboard.html';
+                } else {
+                    showToast("Invalid OTP! Enter 1234", "Error!", "error");
+                    document.getElementById('verifyOtpBtn').innerText = "Verify & Login";
+                }
+            }, 800);
+        }
+
+        function sendSignupOTP() {
+            const name = document.getElementById('regName').value;
+            const id = document.getElementById('regId').value;
+            const num = document.getElementById('regMobile').value;
+
+            if(!name || !id) return showToast("Please fill all details.", "Error!", "error");
+            if(num.length !== 10) return showToast("Enter a valid 10-digit number.", "Error!", "error");
+            
+            document.getElementById('regSendOtpBtn').innerText = "Sending... ⏳";
+            setTimeout(() => {
+                regNumber = num;
+                document.getElementById('regDisplayNum').innerText = "+91 " + num;
+                document.getElementById('signupInputSection').style.display = 'none';
+                document.getElementById('signupOtpSection').style.display = 'block';
+            }, 800);
+        }
+
+        function verifySignupOTP() {
+            const otp = document.getElementById('regOtpInput').value;
+            document.getElementById('regVerifyOtpBtn').innerText = "Creating... ⏳";
+            
+            setTimeout(() => {
+                if(otp === "1234") {
+                    const studentData = {
+                        name: document.getElementById('regName').value,
+                        rollId: document.getElementById('regId').value,
+                        college: "", dept: "", year: ""
+                    };
+                    localStorage.setItem('studentProfileData', JSON.stringify(studentData));
+                    localStorage.setItem('loggedInUser', regNumber);
+                    window.location.href = 'dashboard.html';
+                } else {
+                    showToast("Invalid OTP! Enter 1234", "Error!", "error");
+                    document.getElementById('regVerifyOtpBtn').innerText = "Create Account";
+                }
+            }, 800);
+        }
+
+        window.onload = () => {
+            if(localStorage.getItem('loggedInUser')) {
+                window.location.href = 'dashboard.html';
+            }
+        }
+    </script>
+</body>
+</html>

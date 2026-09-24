@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Premium Profile with Photo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Light & Dark Mode CSS Variables */
+        :root {
+            --bg-color: #080710;
+            --text-color: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-muted: #a4b0be;
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --card-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        body.light-mode {
+            --bg-color: #f0f2f5;
+            --text-color: #1e272e;
+            --card-bg: #ffffff;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --text-muted: #636e72;
+            --input-bg: #f8f9fa;
+            --card-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            overflow-x: hidden; 
+            padding: 20px; 
+            padding-bottom: 90px; 
+            transition: background-color 0.4s ease, color 0.4s ease; 
+        }
+
+        .background { width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: -1; }
+        .shape { height: 350px; width: 350px; position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5; transition: 0.4s; }
+        .shape1 { background: linear-gradient(135deg, #00F260, #0575E6); top: -100px; left: -100px; }
+        .shape2 { background: linear-gradient(135deg, #0575E6, #00F260); bottom: -100px; right: -100px; }
+        body.light-mode .shape { opacity: 0.2; } /* Light mode madhe background shapes thode soft disave */
+
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; margin-top: 10px; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .back-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); width: 40px; height: 40px; border-radius: 12px; font-size: 18px; cursor: pointer; backdrop-filter: blur(5px); box-shadow: var(--card-shadow); transition: 0.3s; }
+        .back-btn:active { transform: scale(0.9); }
+        .header h2 { font-size: 20px; font-weight: 600; }
+        .edit-icon-btn { background: rgba(5, 117, 230, 0.1); color: #00F260; border: 1px solid rgba(0, 242, 96, 0.3); padding: 8px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .edit-icon-btn:active { transform: scale(0.95); }
+
+        /* UNIQUE ID CARD STYLE PROFILE */
+        .profile-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 28px; text-align: center; backdrop-filter: blur(15px); margin-bottom: 25px; box-shadow: var(--card-shadow); overflow: hidden; position: relative; transition: 0.4s ease; }
+        
+        .profile-cover { height: 120px; width: 100%; background: linear-gradient(135deg, #0575E6, #00F260); position: relative; }
+        
+        .avatar-container { position: relative; width: 110px; height: 110px; margin: -55px auto 15px; z-index: 2; }
+        
+        .avatar { width: 100%; height: 100%; border-radius: 50%; background: var(--bg-color); display: flex; justify-content: center; align-items: center; font-size: 40px; font-weight: 700; border: 4px solid var(--bg-color); color: #00F260; background-size: cover; background-position: center; transition: 0.3s ease; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        
+        .camera-icon { position: absolute; bottom: 5px; right: 5px; background: #00F260; color: #080710; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 16px; border: 3px solid var(--bg-color); cursor: pointer; box-shadow: 0 5px 10px rgba(0,0,0,0.2); }
+
+        .profile-info { padding: 0 20px 30px; }
+        .profile-info h3 { font-size: 24px; font-weight: 600; margin-bottom: 8px; text-transform: capitalize; color: var(--text-color); }
+        .badge-premium { display: inline-block; background: rgba(0, 242, 96, 0.1); color: #00F260; border: 1px solid rgba(0, 242, 96, 0.3); padding: 6px 14px; border-radius: 30px; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; }
+
+        /* Stats & Details */
+        .stats-container { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 25px 15px; border-radius: 24px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: var(--card-shadow); backdrop-filter: blur(15px); transition: 0.4s ease; }
+        .stat-item { text-align: center; flex: 1; }
+        .stat-divider { width: 1px; height: 35px; background: var(--border-color); }
+        .stat-item h4 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+        .stat-item p { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.2px; font-weight: 500; }
+
+        .student-details { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 28px; padding: 15px 25px; backdrop-filter: blur(15px); box-shadow: var(--card-shadow); transition: 0.4s ease; }
+        .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-bottom: 1px solid var(--border-color); }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 12px; }
+        .detail-value { font-size: 14px; font-weight: 500; color: var(--text-color); text-align: right; max-width: 55%; word-wrap: break-word; }
+        .not-added { color: #ff4757; font-size: 12px; font-style: italic; opacity: 0.8; }
+
+        .logout-btn { width: 100%; padding: 18px; background: rgba(255, 71, 87, 0.08); color: #ff4757; border: 1px solid rgba(255, 71, 87, 0.2); border-radius: 18px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 25px; transition: 0.3s; }
+        .logout-btn:active { transform: scale(0.97); background: #ff4757; color: white; }
+
+        /* Modal Settings */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: flex-end; z-index: 2000; opacity: 0; transition: 0.4s ease; }
+        .modal-content { background: var(--card-bg); width: 100%; max-height: 90vh; overflow-y: auto; border-radius: 35px 35px 0 0; padding: 35px 25px; border-top: 1px solid var(--border-color); transform: translateY(100%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 -10px 40px rgba(0,0,0,0.2); backdrop-filter: blur(20px); }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .close-btn { background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-color); width: 35px; height: 35px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 13px; margin-bottom: 8px; color: var(--text-muted); font-weight: 500; }
+        .input-group input, .input-group select { width: 100%; padding: 16px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 16px; color: var(--text-color); font-size: 14px; outline: none; transition: 0.3s; }
+        .input-group select option { background: var(--bg-color); color: var(--text-color); }
+        .input-group input:focus, .input-group select:focus { border-color: #00F260; }
+        
+        .save-btn { width: 100%; padding: 18px; background: linear-gradient(90deg, #0575E6, #00F260); color: white; border: none; border-radius: 16px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; box-shadow: 0 10px 25px rgba(0, 242, 96, 0.3); transition: 0.3s; }
+        .save-btn:active { transform: scale(0.97); }
+        
+        .toast-notification { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: var(--card-bg); border: 1px solid #00F260; border-radius: 16px; padding: 15px 25px; display: flex; align-items: center; gap: 15px; z-index: 3000; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); min-width: 300px; backdrop-filter: blur(15px); }
+        .toast-notification.show { top: 30px; }
+        .toast-icon { font-size: 24px; padding: 5px; }
+    </style>
+</head>
+<body>
+    <div id="customToast" class="toast-notification">
+        <div class="toast-icon">✅</div><div><h4 id="toastTitle" style="color:#00F260; font-size:15px; font-weight:600;">Success!</h4><p id="toastMessage" style="color:var(--text-muted); font-size:12px;">Profile Updated.</p></div>
+    </div>
+
+    <div class="background"><div class="shape shape1"></div><div class="shape shape2"></div></div>
+
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="window.location.href='dashboard.html'">←</button>
+            <h2>My Profile</h2>
+        </div>
+        <button class="edit-icon-btn" onclick="openEditModal()">✏️ Edit</button>
+    </div>
+
+    <!-- MODERN ID CARD PROFILE -->
+    <div class="profile-card">
+        <div class="profile-cover"></div>
+        
+        <div class="avatar-container">
+            <!-- Hidden file input for Photo Upload -->
+            <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+            
+            <div class="avatar" id="dispAvatar" onclick="document.getElementById('photoInput').click()">
+                <span id="dispInitial">S</span>
+            </div>
+            <div class="camera-icon" onclick="document.getElementById('photoInput').click()">📷</div>
+        </div>
+
+        <div class="profile-info">
+            <h3 id="dispName">Student Name</h3>
+            <div class="badge-premium">STUDENT ACCOUNT</div>
+        </div>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-item"><h4 id="statTotal" style="color: #00F260;">0</h4><p>Complaints</p></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><h4 id="statPending" style="color: #fbc531;">0</h4><p>Pending</p></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><h4 id="statResolved" style="color: #0575E6;">0</h4><p>Resolved</p></div>
+    </div>
+
+    <div class="student-details">
+        <div class="detail-row"><div class="detail-label">🎓 College</div><div class="detail-value" id="dispCollege"><span class="not-added">Not Added</span></div></div>
+        <div class="detail-row"><div class="detail-label">📚 Dept</div><div class="detail-value" id="dispDept"><span class="not-added">Not Added</span></div></div>
+        <div class="detail-row"><div class="detail-label">📅 Year</div><div class="detail-value" id="dispYear"><span class="not-added">Not Added</span></div></div>
+        <div class="detail-row"><div class="detail-label">🎫 ID / Roll</div><div class="detail-value" id="dispId"><span class="not-added">Not Added</span></div></div>
+    </div>
+
+    <button class="logout-btn" onclick="logout()">Log Out from App</button>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Details ✏️</h3>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form onsubmit="saveProfileData(event)">
+                <div class="input-group"><label>Full Name</label><input type="text" id="inpName" required></div>
+                <div class="input-group"><label>College Name</label><input type="text" id="inpCollege" required></div>
+                <div class="input-group">
+                    <label>Department</label>
+                    <select id="inpDept" required>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Information Tech">Information Tech (IT)</option>
+                        <option value="Mechanical">Mechanical</option>
+                        <option value="Civil">Civil</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Year of Study</label>
+                    <select id="inpYear" required>
+                        <option value="First Year (FE)">First Year (FE)</option>
+                        <option value="Second Year (SE)">Second Year (SE)</option>
+                        <option value="Third Year (TE)">Third Year (TE)</option>
+                        <option value="Final Year (BE)">Final Year (BE)</option>
+                    </select>
+                </div>
+                <div class="input-group"><label>College ID</label><input type="text" id="inpId" required></div>
+                <button type="submit" class="save-btn">Save Profile Data</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 1. LIGHT MODE SYNC LOGIC
+        function checkTheme() {
+            if(localStorage.getItem('appTheme') === 'light') {
+                document.body.classList.add('light-mode');
+            } else {
+                document.body.classList.remove('light-mode');
+            }
+        }
+
+        const loggedInUser = localStorage.getItem('loggedInUser') || "9876543210"; 
+
+        function showToast(message) {
+            const toast = document.getElementById('customToast');
+            document.getElementById('toastMessage').innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        // 2. PHOTO UPLOAD LOGIC (Saves to LocalStorage as Base64)
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    
+                    // Save photo to memory
+                    let savedData = JSON.parse(localStorage.getItem('studentProfileData')) || {};
+                    savedData.photo = base64Image;
+                    localStorage.setItem('studentProfileData', JSON.stringify(savedData));
+                    
+                    // Update UI live
+                    document.getElementById('dispAvatar').style.backgroundImage = `url(${base64Image})`;
+                    document.getElementById('dispInitial').style.display = 'none'; // Hide text initial
+                    showToast("Profile Photo Updated! 📸");
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 3. PROFILE DATA LOGIC
+        function openEditModal() {
+            document.getElementById('editModal').classList.add('active');
+            let savedData = JSON.parse(localStorage.getItem('studentProfileData'));
+            if(savedData) {
+                document.getElementById('inpName').value = savedData.name || '';
+                document.getElementById('inpCollege').value = savedData.college || '';
+                document.getElementById('inpDept').value = savedData.dept || '';
+                document.getElementById('inpYear').value = savedData.year || '';
+                document.getElementById('inpId').value = savedData.rollId || '';
+            }
+        }
+
+        function closeEditModal() { document.getElementById('editModal').classList.remove('active'); }
+
+        function saveProfileData(event) {
+            event.preventDefault();
+            let savedData = JSON.parse(localStorage.getItem('studentProfileData')) || {};
+            
+            savedData.name = document.getElementById('inpName').value;
+            savedData.college = document.getElementById('inpCollege').value;
+            savedData.dept = document.getElementById('inpDept').value;
+            savedData.year = document.getElementById('inpYear').value;
+            savedData.rollId = document.getElementById('inpId').value;
+            
+            localStorage.setItem('studentProfileData', JSON.stringify(savedData));
+            closeEditModal(); 
+            loadProfileData(); 
+            showToast("Details updated LIVE! ✅");
+        }
+
+        function loadProfileData() {
+            let savedData = JSON.parse(localStorage.getItem('studentProfileData'));
+            if(savedData) {
+                // Name & Text Data
+                if(savedData.name) {
+                    document.getElementById('dispName').innerText = savedData.name;
+                    document.getElementById('dispInitial').innerText = savedData.name.charAt(0).toUpperCase();
+                }
+                document.getElementById('dispCollege').innerText = savedData.college || 'Not Added';
+                document.getElementById('dispDept').innerText = savedData.dept || 'Not Added';
+                document.getElementById('dispYear').innerText = savedData.year || 'Not Added';
+                document.getElementById('dispId').innerText = savedData.rollId || 'Not Added';
+
+                // Photo Load logic
+                if(savedData.photo) {
+                    document.getElementById('dispAvatar').style.backgroundImage = `url(${savedData.photo})`;
+                    document.getElementById('dispInitial').style.display = 'none';
+                }
+            }
+        }
+
+        // 4. BACKEND STATS
+        async function fetchComplaintsStats() {
+            try {
+                const response = await fetch(`http://localhost:3000/api/dashboard/${loggedInUser}`);
+                const result = await response.json();
+                if(result.success) {
+                    document.getElementById('statTotal').innerText = result.stats.total;
+                    document.getElementById('statPending').innerText = result.stats.pending;
+                    document.getElementById('statResolved').innerText = result.stats.resolved;
+                }
+            } catch (error) { console.error("Backend Offline"); }
+        }
+
+        function logout() {
+            if(confirm('Are you sure you want to log out?')) {
+                localStorage.removeItem('loggedInUser'); window.location.href = 'index.html';
+            }
+        }
+
+        window.onload = function() {
+            checkTheme(); // Theme forcefully sync hoto ithun
+            loadProfileData();
+            fetchComplaintsStats();
+        };
+    </script>
+</body>
+</html>
