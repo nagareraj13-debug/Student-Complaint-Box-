@@ -368,5 +368,12 @@
             }
         }
 
-        window.onload = () => {
-            if(localStorage.getItem('userR
+        if(localStorage.getItem('userRole') === 'student' && localStorage.getItem('loggedInUser')) {
+                window.location.href = 'dashboard.html';
+            } else if(localStorage.getItem('userRole') === 'admin') {
+                window.location.href = 'admin.html';
+            }
+        }
+    </script>
+</body>
+</html>
