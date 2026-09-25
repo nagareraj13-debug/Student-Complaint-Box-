@@ -68,7 +68,6 @@
     <div class="background"><div class="shape shape1"></div><div class="shape shape2"></div></div>
     <div class="header">
         <button class="back-btn" onclick="window.location.href='dashboard.html'">←</button>
-        <!-- Heading Updated -->
         <h2>Live Track Status</h2>
     </div>
     
@@ -92,10 +91,31 @@
 
                 if(result.success && result.recent.length > 0) {
                     const latest = result.recent[0];
-                    let badgeHtml = latest.status === 'Pending' 
-                        ? `<span class="badge">Action Pending</span>` 
-                        : `<span class="badge resolved">Resolved ✅</span>`;
+                    let isResolved = latest.status === 'Resolved';
+                    
+                    let badgeHtml = isResolved 
+                        ? `<span class="badge resolved">Resolved ✅</span>`
+                        : `<span class="badge">Action Pending</span>`;
+                        
                     let statusDate = new Date(latest.date).toLocaleString();
+
+                    // Dynamic Timeline Logic
+                    let timelineHtml = `
+                        <div class="timeline">
+                            <div class="timeline-step completed">
+                                <h4>Complaint Submitted</h4><p>${statusDate}</p>
+                            </div>
+                            <div class="timeline-step ${isResolved ? 'completed' : 'active'}">
+                                <h4>Admin Review Pending</h4><p>Our team will verify this soon.</p>
+                            </div>
+                            <div class="timeline-step ${isResolved ? 'completed' : ''}">
+                                <h4>Action In Progress</h4><p>Waiting for department assignment</p>
+                            </div>
+                            <div class="timeline-step ${isResolved ? 'completed' : ''}">
+                                <h4>Issue Resolved</h4><p>${isResolved ? 'Complaint has been resolved by Admin ✅' : 'Pending confirmation'}</p>
+                            </div>
+                        </div>
+                    `;
 
                     trackerDiv.innerHTML = `
                         <div class="complaint-details">
@@ -104,20 +124,7 @@
                             ${badgeHtml}
                             <div class="desc-box"><strong>Description:</strong> ${latest.description}</div>
                         </div>
-                        <div class="timeline">
-                            <div class="timeline-step completed">
-                                <h4>Complaint Submitted</h4><p>${statusDate}</p>
-                            </div>
-                            <div class="timeline-step active">
-                                <h4>Admin Review Pending</h4><p>Our team will verify this soon.</p>
-                            </div>
-                            <div class="timeline-step">
-                                <h4>Action In Progress</h4><p>Waiting for department assignment</p>
-                            </div>
-                            <div class="timeline-step">
-                                <h4>Issue Resolved</h4><p>Pending confirmation</p>
-                            </div>
-                        </div>
+                        ${timelineHtml}
                     `;
                 } else {
                     trackerDiv.innerHTML = `
@@ -141,4 +148,3 @@
     </script>
 </body>
 </html>
-
