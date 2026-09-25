@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Complaint Box - Smart Authentication</title>
     
-    <!-- Real App Icon Settings -->
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="apple-touch-icon" href="logo.png">
+    <!-- Real App Icon Settings (Cache Fix) -->
+    <link rel="icon" type="image/png" href="logo.png?v=2">
+    <link rel="apple-touch-icon" href="logo.png?v=2">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     
@@ -52,13 +52,14 @@
     </style>
 </head>
 <body>
-    <!-- Google Auth Config -->
+    <!-- Google Auth Config (White Screen Fix) -->
     <div id="g_id_onload"
          data-client_id="455118025681-rphn053eoe2pom4sjg1nispjtck44jnu.apps.googleusercontent.com"
          data-context="signin"
          data-ux_mode="popup"
          data-callback="handleCredentialResponse"
-         data-auto_prompt="false">
+         data-auto_prompt="false"
+         data-itp_support="true">
     </div>
 
     <div id="customToast" class="toast-notification">
@@ -371,4 +372,3 @@
     </script>
 </body>
 </html>
-
