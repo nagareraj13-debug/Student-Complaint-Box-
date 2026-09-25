@@ -269,25 +269,11 @@
         }
 
         function simulateGoogleLogin() {
-            showToast("Connecting to Google...", "Please Wait", "success");
-            
-            setTimeout(() => {
-                const studentData = {
-                    name: "Raj Nagare",
-                    rollId: "raj.nagare@kbtcoe.org",
-                    college: "MVP KBTCOE",
-                    dept: "Computer Engineering",
-                    year: "Student",
-                    photo: ""
-                };
-                localStorage.setItem('studentProfileData', JSON.stringify(studentData));
-                localStorage.setItem('loggedInUser', "raj.nagare@kbtcoe.org");
-                localStorage.setItem('userRole', 'student');
-                
-                showToast("Google Login Successful!", "Connected");
-                setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
-            }, 1500);
+    showToast("Connecting to Google Secure Login...", "Please Wait", "success");
+    window.location.href = "https://student-complaint-box-3kc3.onrender.com/auth/google";
         }
+        
+        
 
         function sendOTP() {
             const num = document.getElementById('mobileNumber').value;
