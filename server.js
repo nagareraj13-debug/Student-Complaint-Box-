@@ -81,6 +81,18 @@ app.get('/auth/google', (req, res) => {
 app.get('/', (req, res) => { 
     res.send("Backend is Running on Cloud!"); 
 });
+// ==========================================
+// 🚀 ADMIN PORTAL: GET ALL COMPLAINTS
+// ==========================================
+app.get('/api/admin/complaints', async (req, res) => {
+    try {
+        const allComplaints = await Complaint.find({});
+        res.json({ success: true, data: allComplaints });
+    } catch (error) {
+        console.error("Admin API Error:", error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => { console.log(`🚀 Server running on port ${PORT}`); });
