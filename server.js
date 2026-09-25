@@ -105,6 +105,18 @@ app.post('/api/admin/login', (req, res) => {
         res.json({ success: false, message: 'Invalid Admin ID or Password' });
     }
 });
+// ==========================================
+// 🛠️ ADMIN PORTAL: UPDATE COMPLAINT STATUS
+// ==========================================
+app.post('/api/admin/update-status', async (req, res) => {
+    try {
+        const { id, status } = req.body;
+        await Complaint.findByIdAndUpdate(id, { status: status });
+        res.json({ success: true, message: "Status Updated!" });
+    } catch (error) {
+        res.json({ success: false, message: "Server Error" });
+    }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => { console.log(`🚀 Server running on port ${PORT}`); });
