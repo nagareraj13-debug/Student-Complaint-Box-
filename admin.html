@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Complaint Box</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #080710; min-height: 100vh; color: #ffffff; padding: 20px; }
+        .background { width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: -1; }
+        .shape { height: 350px; width: 350px; position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5; }
+        .shape1 { background: linear-gradient(135deg, #ff416c, #ff4b2b); top: -100px; left: -100px; }
+        .shape2 { background: linear-gradient(135deg, #0575E6, #00F260); bottom: -100px; right: -100px; }
+        
+        .header { text-align: center; margin-bottom: 30px; margin-top: 10px; }
+        .header h2 { font-size: 24px; font-weight: 600; color: #00F260; }
+        
+        .complaint-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 20px; border-radius: 15px; margin-bottom: 20px; backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;}
+        .complaint-info h3 { font-size: 18px; margin-bottom: 5px; color: #ffffff; }
+        .complaint-info p { font-size: 13px; color: #a4b0be; margin-bottom: 3px; }
+        .badge { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; }
+        .badge.pending { background: rgba(251, 197, 49, 0.2); color: #fbc531; }
+        .badge.resolved { background: rgba(0, 242, 96, 0.2); color: #00F260; }
+        
+        .action-btn { background: #0575E6; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: 0.3s; }
+        .action-btn:hover { background: #00F260; color: black; }
+        .nav-link { color: #a4b0be; text-decoration: none; font-size: 14px; position: absolute; top: 20px; left: 20px; }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+    </div>
+
+    <a href="dashboard.html" class="nav-link">← Back to App</a>
+
+    <div class="header">
+        <h2>Admin Control Panel ⚙️</h2>
+        <p style="color: #a4b0be; font-size: 14px;">Manage all student complaints here</p>
+    </div>
+
+    <div id="adminData">
+        <p style="text-align: center; color: #a4b0be; margin-top: 50px;">Fetching all complaints from server... ⏳</p>
+    </div>
+
+    <script>
+        // Hi script Render chya backend madhun data gheil
+        async function fetchAllComplaints() {
+            try {
+                // Aapan server.js madhe ha route next step madhe banvuya
+                const response = await fetch('https://student-complaint-box-3kc3.onrender.com/api/admin/complaints'); 
+                const result = await response.json();
+                
+                const adminDiv = document.getElementById('adminData');
+                adminDiv.innerHTML = ''; 
+
+                if(result.success && result.data.length > 0) {
+                    // Sagyat navin complaint aadhi disnyasathi array reverse kela
+                    const complaints = result.data.reverse(); 
+
+                    complaints.forEach(complaint => {
+                        let badgeClass = complaint.status === 'Pending' ? 'pending' : 'resolved';
+                        let statusText = complaint.status === 'Pending' ? 'Action Pending' : 'Resolved ✅';
+                        let date = new Date(complaint.date).toLocaleString();
+
+                        let card = `
+                            <div class="complaint-card">
+                                <div class="complaint-info">
+                                    <h3>${complaint.category} Issue</h3>
+                                    <p><strong>Tracking ID:</strong> ${complaint._id}</p>
+                                    <p><strong>Description:</strong> ${complaint.description}</p>
+                                    <p style="margin-top: 8px; font-size: 11px;">📅 ${date}</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div class="badge ${badgeClass}" style="margin-bottom: 15px; display: inline-block;">${statusText}</div>
+                                    <br>
+                                    ${complaint.status === 'Pending' ? `<button class="action-btn" onclick="resolveComplaint('${complaint._id}')">Mark as Resolved</button>` : ''}
+                                </div>
+                            </div>
+                        `;
+                        adminDiv.innerHTML += card;
+                    });
+                } else {
+                    adminDiv.innerHTML = `<p style="text-align: center; color: #a4b0be; margin-top: 50px;">No complaints found in database.</p>`;
+                }
+            } catch (error) {
+                document.getElementById('adminData').innerHTML = `<p style="text-align: center; color: #ff4757; margin-top: 50px;">Admin API setup pending in backend! ❌</p>`;
+            }
+        }
+
+        // Complaint resolve karnyachi dummy function (Backend link jhalyavar update karu)
+        function resolveComplaint(id) {
+            alert('Backend action pending! We will link this button to Server.js in the next step.');
+        }
+
+        window.onload = fetchAllComplaints;
+    </script>
+</body>
+</html>
