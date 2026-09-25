@@ -27,20 +27,12 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { 
-            background-color: var(--bg-color); 
-            color: var(--text-color); 
-            overflow-x: hidden; 
-            padding: 20px; 
-            padding-bottom: 90px; 
-            transition: background-color 0.4s ease, color 0.4s ease; 
-        }
-
+        body { background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; padding: 20px; padding-bottom: 90px; transition: background-color 0.4s ease, color 0.4s ease; }
         .background { width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: -1; }
         .shape { height: 350px; width: 350px; position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5; transition: 0.4s; }
         .shape1 { background: linear-gradient(135deg, #00F260, #0575E6); top: -100px; left: -100px; }
         .shape2 { background: linear-gradient(135deg, #0575E6, #00F260); bottom: -100px; right: -100px; }
-        body.light-mode .shape { opacity: 0.2; } /* Light mode madhe background shapes thode soft disave */
+        body.light-mode .shape { opacity: 0.2; }
 
         .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; margin-top: 10px; }
         .header-left { display: flex; align-items: center; gap: 15px; }
@@ -50,22 +42,16 @@
         .edit-icon-btn { background: rgba(5, 117, 230, 0.1); color: #00F260; border: 1px solid rgba(0, 242, 96, 0.3); padding: 8px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .edit-icon-btn:active { transform: scale(0.95); }
 
-        /* UNIQUE ID CARD STYLE PROFILE */
         .profile-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 28px; text-align: center; backdrop-filter: blur(15px); margin-bottom: 25px; box-shadow: var(--card-shadow); overflow: hidden; position: relative; transition: 0.4s ease; }
-        
         .profile-cover { height: 120px; width: 100%; background: linear-gradient(135deg, #0575E6, #00F260); position: relative; }
-        
         .avatar-container { position: relative; width: 110px; height: 110px; margin: -55px auto 15px; z-index: 2; }
-        
         .avatar { width: 100%; height: 100%; border-radius: 50%; background: var(--bg-color); display: flex; justify-content: center; align-items: center; font-size: 40px; font-weight: 700; border: 4px solid var(--bg-color); color: #00F260; background-size: cover; background-position: center; transition: 0.3s ease; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        
         .camera-icon { position: absolute; bottom: 5px; right: 5px; background: #00F260; color: #080710; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 16px; border: 3px solid var(--bg-color); cursor: pointer; box-shadow: 0 5px 10px rgba(0,0,0,0.2); }
 
         .profile-info { padding: 0 20px 30px; }
         .profile-info h3 { font-size: 24px; font-weight: 600; margin-bottom: 8px; text-transform: capitalize; color: var(--text-color); }
         .badge-premium { display: inline-block; background: rgba(0, 242, 96, 0.1); color: #00F260; border: 1px solid rgba(0, 242, 96, 0.3); padding: 6px 14px; border-radius: 30px; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; }
 
-        /* Stats & Details */
         .stats-container { display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 25px 15px; border-radius: 24px; margin-bottom: 25px; border: 1px solid var(--border-color); box-shadow: var(--card-shadow); backdrop-filter: blur(15px); transition: 0.4s ease; }
         .stat-item { text-align: center; flex: 1; }
         .stat-divider { width: 1px; height: 35px; background: var(--border-color); }
@@ -82,7 +68,6 @@
         .logout-btn { width: 100%; padding: 18px; background: rgba(255, 71, 87, 0.08); color: #ff4757; border: 1px solid rgba(255, 71, 87, 0.2); border-radius: 18px; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 25px; transition: 0.3s; }
         .logout-btn:active { transform: scale(0.97); background: #ff4757; color: white; }
 
-        /* Modal Settings */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: flex-end; z-index: 2000; opacity: 0; transition: 0.4s ease; }
         .modal-content { background: var(--card-bg); width: 100%; max-height: 90vh; overflow-y: auto; border-radius: 35px 35px 0 0; padding: 35px 25px; border-top: 1px solid var(--border-color); transform: translateY(100%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 -10px 40px rgba(0,0,0,0.2); backdrop-filter: blur(20px); }
         .modal-overlay.active { display: flex; opacity: 1; }
@@ -119,20 +104,15 @@
         <button class="edit-icon-btn" onclick="openEditModal()">✏️ Edit</button>
     </div>
 
-    <!-- MODERN ID CARD PROFILE -->
     <div class="profile-card">
         <div class="profile-cover"></div>
-        
         <div class="avatar-container">
-            <!-- Hidden file input for Photo Upload -->
             <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
-            
             <div class="avatar" id="dispAvatar" onclick="document.getElementById('photoInput').click()">
                 <span id="dispInitial">S</span>
             </div>
             <div class="camera-icon" onclick="document.getElementById('photoInput').click()">📷</div>
         </div>
-
         <div class="profile-info">
             <h3 id="dispName">Student Name</h3>
             <div class="badge-premium">STUDENT ACCOUNT</div>
@@ -156,7 +136,6 @@
 
     <button class="logout-btn" onclick="logout()">Log Out from App</button>
 
-    <!-- Edit Profile Modal -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -192,7 +171,6 @@
     </div>
 
     <script>
-        // 1. LIGHT MODE SYNC LOGIC
         function checkTheme() {
             if(localStorage.getItem('appTheme') === 'light') {
                 document.body.classList.add('light-mode');
@@ -210,29 +188,23 @@
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
-        // 2. PHOTO UPLOAD LOGIC (Saves to LocalStorage as Base64)
         function handlePhotoUpload(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const base64Image = e.target.result;
-                    
-                    // Save photo to memory
                     let savedData = JSON.parse(localStorage.getItem('studentProfileData')) || {};
                     savedData.photo = base64Image;
                     localStorage.setItem('studentProfileData', JSON.stringify(savedData));
-                    
-                    // Update UI live
                     document.getElementById('dispAvatar').style.backgroundImage = `url(${base64Image})`;
-                    document.getElementById('dispInitial').style.display = 'none'; // Hide text initial
+                    document.getElementById('dispInitial').style.display = 'none'; 
                     showToast("Profile Photo Updated! 📸");
                 }
                 reader.readAsDataURL(file);
             }
         }
 
-        // 3. PROFILE DATA LOGIC
         function openEditModal() {
             document.getElementById('editModal').classList.add('active');
             let savedData = JSON.parse(localStorage.getItem('studentProfileData'));
@@ -266,17 +238,15 @@
         function loadProfileData() {
             let savedData = JSON.parse(localStorage.getItem('studentProfileData'));
             if(savedData) {
-                // Name & Text Data
                 if(savedData.name) {
                     document.getElementById('dispName').innerText = savedData.name;
                     document.getElementById('dispInitial').innerText = savedData.name.charAt(0).toUpperCase();
                 }
-                document.getElementById('dispCollege').innerText = savedData.college || 'Not Added';
-                document.getElementById('dispDept').innerText = savedData.dept || 'Not Added';
-                document.getElementById('dispYear').innerText = savedData.year || 'Not Added';
-                document.getElementById('dispId').innerText = savedData.rollId || 'Not Added';
+                document.getElementById('dispCollege').innerHTML = savedData.college || '<span class="not-added">Not Added</span>';
+                document.getElementById('dispDept').innerHTML = savedData.dept || '<span class="not-added">Not Added</span>';
+                document.getElementById('dispYear').innerHTML = savedData.year || '<span class="not-added">Not Added</span>';
+                document.getElementById('dispId').innerHTML = savedData.rollId || '<span class="not-added">Not Added</span>';
 
-                // Photo Load logic
                 if(savedData.photo) {
                     document.getElementById('dispAvatar').style.backgroundImage = `url(${savedData.photo})`;
                     document.getElementById('dispInitial').style.display = 'none';
@@ -284,10 +254,10 @@
             }
         }
 
-        // 4. BACKEND STATS
         async function fetchComplaintsStats() {
             try {
-                const response = await fetch(`http://localhost:3000/api/dashboard/${loggedInUser}`);
+                // FIXED LIVE SERVER URL
+                const response = await fetch(`https://student-complaint-box-3kc3.onrender.com/api/dashboard/${loggedInUser}`);
                 const result = await response.json();
                 if(result.success) {
                     document.getElementById('statTotal').innerText = result.stats.total;
@@ -304,10 +274,11 @@
         }
 
         window.onload = function() {
-            checkTheme(); // Theme forcefully sync hoto ithun
+            checkTheme(); 
             loadProfileData();
             fetchComplaintsStats();
         };
     </script>
 </body>
 </html>
+    
