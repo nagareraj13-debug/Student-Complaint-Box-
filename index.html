@@ -8,76 +8,38 @@
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        
-        body {
-            background-color: #080710;
-            color: #ffffff;
-            width: 100vw;
-            min-height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
-
+        body { background-color: #080710; color: #ffffff; width: 100vw; min-height: 100vh; overflow: hidden; position: relative; }
         .background { width: 100%; height: 100vh; position: fixed; top: 0; left: 0; z-index: -1; }
         .shape { height: 400px; width: 400px; position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5; }
         .shape1 { background: linear-gradient(135deg, #00F260, #0575E6); top: -150px; left: -150px; }
         .shape2 { background: linear-gradient(135deg, #0575E6, #00F260); bottom: -150px; right: -150px; }
-        
-        .login-card {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 40px 30px;
-            border-radius: 24px;
-            width: 90%;
-            max-width: 400px;
-            max-height: 90vh;
-            overflow-y: auto;
-            backdrop-filter: blur(15px);
-            text-align: center;
-            z-index: 10;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-        }
-        
+        .login-card { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 40px 30px; border-radius: 24px; width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto; backdrop-filter: blur(15px); text-align: center; z-index: 10; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
         .login-card::-webkit-scrollbar { display: none; }
         .login-card { -ms-overflow-style: none; scrollbar-width: none; }
-        
         .title-text { font-size: 24px; font-weight: 600; margin-bottom: 25px; min-height: 70px; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-
         .toggle-box { position: relative; display: flex; background: rgba(255, 255, 255, 0.05); border-radius: 30px; margin: 0 auto 25px; width: 100%; max-width: 280px; transition: 0.3s; }
         .toggle-btn { position: absolute; width: 50%; height: 100%; background: linear-gradient(90deg, #00F260, #0575E6); border-radius: 30px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; left: 0; }
         .toggle-option { flex: 1; padding: 12px; text-align: center; z-index: 2; cursor: pointer; color: white; font-weight: 500; font-size: 14px; background: none; border: none; outline: none; transition: 0.3s; }
-
         .input-group { margin-bottom: 20px; text-align: left; }
         .input-group label { display: block; font-size: 13px; color: #a4b0be; margin-bottom: 8px; }
         .input-group input { width: 100%; padding: 15px 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: #ffffff; font-size: 14px; outline: none; transition: 0.3s; }
         .input-group input:focus { border-color: #00F260; background: rgba(255, 255, 255, 0.08); }
-
         .btn { width: 100%; background: #ffffff; color: #000000; padding: 15px; border-radius: 12px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .btn:active { transform: scale(0.98); }
-
         .divider { display: flex; align-items: center; text-align: center; margin: 25px 0; }
         .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
         .divider span { padding: 0 15px; color: #a4b0be; font-size: 12px; }
-
         .google-btn { width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #ffffff; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .google-btn:hover { background: rgba(255,255,255,0.1); }
         .google-btn:active { transform: scale(0.97); }
         .google-icon { width: 20px; height: 20px; }
-        
         .signup-text { margin-top: 25px; font-size: 13px; color: #a4b0be; }
         .signup-text span { color: #00F260; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .signup-text span:hover { text-decoration: underline; }
-
         .form-section { display: none; }
         .form-section.active { display: block; animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
         .otp-section { display: none; }
-        
         .toast-notification { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(15, 15, 25, 0.95); border: 1px solid #00F260; border-radius: 16px; padding: 15px 25px; display: flex; align-items: center; gap: 15px; z-index: 3000; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); min-width: 300px; backdrop-filter: blur(10px); }
         .toast-notification.show { top: 30px; }
         .toast-icon { font-size: 24px; background: rgba(0, 242, 96, 0.1); padding: 10px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
@@ -200,7 +162,6 @@
         </div>
     </div>
 
-    <!-- Fix: Putting all JS inside one <script> tag properly -->
     <script>
         let currentNumber = "";
         let regNumber = "";
@@ -269,11 +230,9 @@
         }
 
         function simulateGoogleLogin() {
-    showToast("Connecting to Google Secure Login...", "Please Wait", "success");
-    window.location.href = "https://student-complaint-box-3kc3.onrender.com/auth/google";
+            showToast("Connecting to Google Secure Login...", "Please Wait", "success");
+            window.location.href = "https://student-complaint-box-3kc3.onrender.com/auth/google";
         }
-        
-        
 
         function sendOTP() {
             const num = document.getElementById('mobileNumber').value;
@@ -354,7 +313,8 @@
             }
         }
 
-        if(localStorage.getItem('userRole') === 'student' && localStorage.getItem('loggedInUser')) {
+        window.onload = () => {
+            if(localStorage.getItem('userRole') === 'student' && localStorage.getItem('loggedInUser')) {
                 window.location.href = 'dashboard.html';
             } else if(localStorage.getItem('userRole') === 'admin') {
                 window.location.href = 'admin.html';
