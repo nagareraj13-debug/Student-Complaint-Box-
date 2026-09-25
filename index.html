@@ -301,17 +301,35 @@
             }, 800);
         }
 
-        function handleAdminLogin() {
+                async function handleAdminLogin() {
             const user = document.getElementById('adminUser').value;
             const pass = document.getElementById('adminPass').value;
+            
+            const loginBtn = document.querySelector('#adminForm .btn');
+            loginBtn.innerText = "Verifying... ⏳";
 
-            if (user === "admin" && pass === "admin123") {
-                localStorage.setItem('userRole', 'admin');
-                window.location.href = "admin.html";
-            } else {
-                showToast("Invalid Admin ID or Password", "Error!", "error");
+            try {
+                // Backend kade secure request pathavne
+                const response = await fetch('https://student-complaint-box-3kc3.onrender.com/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: user, password: pass })
+                });
+                
+                const result = await response.json();
+
+                if (result.success) {
+                    localStorage.setItem('userRole', 'admin');
+                    window.location.href = "admin.html";
+                } else {
+                    showToast(result.message, "Error!", "error");
+                    loginBtn.innerText = "Admin Login";
+                }
+            } catch (error) {
+                showToast("Server Offline! Try again.", "Error!", "error");
+                loginBtn.innerText = "Admin Login";
             }
-        }
+                }
 
         window.onload = () => {
             if(localStorage.getItem('userRole') === 'student' && localStorage.getItem('loggedInUser')) {
