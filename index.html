@@ -341,7 +341,7 @@
             }, 800);
         }
 
-        async function handleAdminLogin() {
+                async function handleAdminLogin() {
             const user = document.getElementById('adminUser').value;
             const pass = document.getElementById('adminPass').value;
             
@@ -360,4 +360,15 @@
                 if (result.success) {
                     localStorage.setItem('userRole', 'admin');
                     window.location.replace("admin.html");
-    
+                } else {
+                    showToast(result.message, "Error!", "error");
+                    loginBtn.innerText = "Admin Login";
+                }
+            } catch (error) {
+                showToast("Server Offline! Try again.", "Error!", "error");
+                loginBtn.innerText = "Admin Login";
+            }
+        }
+    </script>
+</body>
+</html>
