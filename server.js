@@ -92,6 +92,18 @@ app.get('/api/admin/complaints', async (req, res) => {
         console.error("Admin API Error:", error);
         res.status(500).json({ success: false, message: 'Server error' });
     }
+}); // ==========================================
+// 🔐 ADMIN LOGIN: SECURE AUTHENTICATION
+// ==========================================
+app.post('/api/admin/login', (req, res) => {
+    const { username, password } = req.body;
+    
+    // Ha password fkt server var asel, konalach disnar nahi
+    if (username === 'Firstadmin' && password === 'admin$1336') {
+        res.json({ success: true, message: 'Login successful' });
+    } else {
+        res.json({ success: false, message: 'Invalid Admin ID or Password' });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
