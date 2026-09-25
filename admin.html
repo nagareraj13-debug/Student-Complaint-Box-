@@ -49,7 +49,6 @@
         // Hi script Render chya backend madhun data gheil
         async function fetchAllComplaints() {
             try {
-                // Aapan server.js madhe ha route next step madhe banvuya
                 const response = await fetch('https://student-complaint-box-3kc3.onrender.com/api/admin/complaints'); 
                 const result = await response.json();
                 
@@ -90,9 +89,34 @@
             }
         }
 
-        // Complaint resolve karnyachi dummy function (Backend link jhalyavar update karu)
-        function resolveComplaint(id) {
-            alert('Backend action pending! We will link this button to Server.js in the next step.');
+        // Real Complaint Resolve API Call
+        async function resolveComplaint(id) {
+            const btn = event.target;
+            btn.innerText = "Updating...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('https://student-complaint-box-3kc3.onrender.com/api/admin/update-status', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id, status: 'Resolved' })
+                });
+                
+                const result = await response.json();
+                
+                if(result.success) {
+                    alert("✅ Action Successful! Complaint marked as resolved.");
+                    location.reload(); 
+                } else {
+                    alert("❌ Failed to update status.");
+                    btn.innerText = "Mark as Resolved";
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                alert("❌ Server offline! Please try again.");
+                btn.innerText = "Mark as Resolved";
+                btn.disabled = false;
+            }
         }
 
         window.onload = fetchAllComplaints;
